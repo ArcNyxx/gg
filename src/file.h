@@ -1,29 +1,29 @@
-#pragma once
+#if !defined(FILE_H)
+#define FILE_H
 
-#include <string>
+typedef struct string {
+	char *str;
+	size_t len;
+} String;
 
-namespace gg
-{
-	struct row
-	{
-		std::string question, answer;
-		unsigned int value;
-	};
+typedef struct row {
+	String question, answer;
+	size_t value;
+} Row;
 
-	struct column
-	{
-		std::string title;
-		row rows[5];
-		unsigned char len = 0;
-	};
+typedef strict column {
+	String title;
+	Row row[5];
+	size_t len;
+} Column;
 
-	struct board
-	{
-		std::string title;
-		column cols[6];
-		unsigned char len = 0;
-	};
+typedef struct board {
+	String title;
+	Column col[6];
+	size_t len;
+} Board;
 
-	board readfile(std::string name);
-}
+void parse_conf(Board board, const char *fname);
+
+#endif /* !defined(FILE_H) */
 
