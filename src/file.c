@@ -3,74 +3,75 @@
 #include <string.h>
 
 #include "file.h"
+#include "config.h"
 
 #define ERROR(msg) fprintf(stderr, "gg: invalid syntax: " msg " (%d)\n", line)
 #define EXIT(msg) ERROR(msg); exit(1);
 
-#define STRCPY(dest, src, len) \
-	dest = malloc(len + 1); \
-	memcpy(dest, src, len + 1);
-
-void
-parse_conf(Board board, const char *fname)
+Board
+parse_conf(const char *fname)
 {
-	char *dump;
-	unsigned int line = 3, dumplen = 0;
+	char *dump = NULL;
+	size_t line = 2, dumplen = 0;
+	Board board = { 0 };
 
-	FILE *file
+	FILE *file;
 	if (!(file = fopen(fname, "r"))) {
 		fprintf(stderr, "gg: file not found\n");
 		exit(1);
 	}
 
-	getline(&board.title.str, &board.title.len, file);
-	if (getline(NULL, NULL, file) != 1) {
+	board.title.len = getline(&board.title.str, &dumplen, file) - 1;
+	if (getline(&dump, &dumplen, file) != 1) {
 		fprintf(stderr, "gg: invalid syntax: expected blank line (2)\n");
 		exit(1);
 	}
 
 	for (char i = 0; i < 6; ++i) {
 		++line;
-		if (getline(&board.col[i].title.str, &board.col[i].title.len, file) == -1) {
+		if ((board.col[i].title.len = 
+			getline(&board.col[i].title.str, &dumplen, file)) == -1) {
 			board.len = i;
 			break;
 		}
 
 		for (char j = 0; ; ++j) {
 			++line;
-			if (getline(&dump, &dumplen, file) == -1) {
+			size_t temp;
+			if ((temp = getline(&dump, &dumplen, file)) == -1) {
 				EXIT("row or newline expected")
-			} else if (dumplen == 1) {
+			} else if (temp == 1) {
 				board.col[i].len = j;
 				break;
 			} else if (j == 6) {
 				EXIT("newline expected")
 			}
 
-			const char *delim = " %% ";
-			int start = strstr(dump, delim) + 4;
-			int end = strstr(dump + start, delim);
-			
-			if (!(start && end)) {
-				EXIT("delimeters not found")
+			char *start, *end;
+			if (!((start = strstr(dump, delim)) &&
+				(end = strstr(start += 4, delim)))) {
+				EXIT("delimeters not found")	
 			}
 			if ((board.col[i].row[j].value = strtoll(dump, NULL, 0)) == 0) {
 				EXIT("number >0 expected")
 			}
-			
-			board.col[i].row[j].question.len = end - start;
-			STRCPY(board.col[i].row[j].question.str, start,
-				board.col[i].row[j].question.len)
-			board.col[i].row[j].answer.len = strlen(end + 4);
-			STRCPY(board.col[i].row[j].answer.str, start,
-				board.col[i].row[j].answer.len)
 
-			free(dump);
-			dumplen = 0;
+			board.col[i].row[j].question.len = end - start;
+			board.col[i].row[j].question.str =
+				malloc(board.col[i].row[j].question.len + 1);
+			memcpy(board.col[i].row[j].question.str, start,
+				board.col[i].row[j].question.len + 1);
+
+			board.col[i].row[j].answer.len = strlen(end + 4) - 1;
+			board.col[i].row[j].answer.str =
+				malloc(board.col[i].row[j].answer.len + 1);
+			strncpy(board.col[i].row[j].answer.str, end + 4,
+				board.col[i].row[j].answer.len);
 		}
 	}
 
 	free(dump);
 	fclose(file);
+	return board;
 }
 

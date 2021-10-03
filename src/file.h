@@ -1,5 +1,9 @@
-#if !defined(FILE_H)
+#ifndef FILE_H
 #define FILE_H
+
+#ifndef _STDDEF_H
+#include <stddef.h>
+#endif /* _STDDEF_H */
 
 typedef struct string {
 	char *str;
@@ -11,7 +15,7 @@ typedef struct row {
 	size_t value;
 } Row;
 
-typedef strict column {
+typedef struct column {
 	String title;
 	Row row[5];
 	size_t len;
@@ -23,7 +27,7 @@ typedef struct board {
 	size_t len;
 } Board;
 
-void parse_conf(Board board, const char *fname);
+Board parse_conf(const char *fname);
 
-#endif /* !defined(FILE_H) */
+#endif /* FILE_H */
 
