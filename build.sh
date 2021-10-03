@@ -1,3 +1,3 @@
 #!/bin/sh
-gcc src/*.c -o gg -lsfml-graphics -lsfml-system -lsfml-window
+gcc src/*.c -o gg -lcsfml-graphics -lcsfml-system -lcsfml-window
 

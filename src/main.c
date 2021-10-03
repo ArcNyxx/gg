@@ -15,12 +15,9 @@ main(int argc, char *argv[])
 		exit(1);
 	}
 
-	Board board = parse_conf(argv[1]);
-	board.title.str = realloc(board.title.str, board.title.len + sizeof(title));
-	memcpy(board.title.str + board.title.len, title, sizeof(title));
-	printf("gg: status: config file formatted correctly\n");
-
 	int width = 800, height = 600, x, y, col, row, que = 1;
+	Board board = parse_conf(argv[1]);
+	printf("gg: status: config file formatted correctly\n");
 
 	sfFont *font;
 	if (!(font = sfFont_createFromFile(fontpath))) {
@@ -39,7 +36,7 @@ main(int argc, char *argv[])
 	sfVideoMode mode = { width, height, 32 };
 
 	if (!(window = sfRenderWindow_create(
-		mode, board.title.str, sfDefaultStyle, NULL))) {
+		mode, board.title, sfDefaultStyle, NULL))) {
 		fprintf(stderr, "gg: unable to create window\n");
 		exit(1);
 	}
@@ -64,13 +61,20 @@ main(int argc, char *argv[])
 		}
 		
 		sfRenderWindow_clear(window, sfBlack);
-		
-		int rows = width / 7, cols = height / 6;
+
+		int rows = width / 6, cols = height / 6;
 		for (int i = 0; i < board.len; ++i) {
-			sfVector2f vec = { rows * i + 5, 5 };
+			sfVector2f vec = { rows * i + 5, cols / 2 };
 			sfText_setPosition(sm_text, vec);
 			sfText_setString(sm_text, board.col[i].title.str);
 			sfRenderWindow_drawText(window, sm_text, NULL);
+
+			for (int j = 0; j < board.col[i].len; ++j) {
+				sfVector2f vecrow = { rows * i + 5, cols * i + cols / 2 };
+				sfText_setPosition(sm_text, vec);
+				sfText_setString(sm_text, board.col[i].row[i].value.str);
+				sfRenderWindow_drawText(window, sm_text, NULL);
+			}
 		}
 
 		sfRenderWindow_display(window);

@@ -11,8 +11,8 @@
 Board
 parse_conf(const char *fname)
 {
-	char *dump = NULL;
-	size_t line = 2, dumplen = 0;
+	char *dump = NULL, *que, *ans;
+	size_t line = 2, dumplen = 0, dumpalloc = 0;
 	Board board = { 0 };
 
 	FILE *file;
@@ -21,52 +21,52 @@ parse_conf(const char *fname)
 		exit(1);
 	}
 
-	board.title.len = getline(&board.title.str, &dumplen, file) - 1;
-	if (getline(&dump, &dumplen, file) != 1) {
-		fprintf(stderr, "gg: invalid syntax: expected blank line (2)\n");
-		exit(1);
+	dumplen = getline(&board.title, &dumpalloc, file) - 1;
+	board.title = realloc(board.title, dumplen + sizeof(title));
+	memcpy(board.title + dumplen, title, sizeof(title));
+	if (getline(&dump, &dumpalloc, file) != 1) {
+		EXIT("newline expected");
 	}
 
-	for (char i = 0; i < 6; ++i) {
-		++line;
-		if ((board.col[i].title.len = 
-			getline(&board.col[i].title.str, &dumplen, file)) == -1) {
+	for (char i = 0; ; ++i, ++line) {
+		if ((board.col[i].title.len = getline(
+			&board.col[i].title.str, &dumplen, file)) == -1) {
 			board.len = i;
 			break;
+		} else if (i >= 6) {
+			EXIT("end of file expected")
 		}
+		board.col[i].title.str = realloc(board.col[i].title.str,
+			board.col[i].title.len + 1);
 
-		for (char j = 0; ; ++j) {
-			++line;
-			size_t temp;
-			if ((temp = getline(&dump, &dumplen, file)) == -1) {
+		for (char j = 0; ; ++j, ++line) {
+			if ((dumplen = getline(&dump, &dumpalloc, file)) == -1) {
 				EXIT("row or newline expected")
-			} else if (temp == 1) {
+			} else if (dumplen == 1) {
 				board.col[i].len = j;
 				break;
-			} else if (j == 6) {
+			} else if (j >= 6) {
 				EXIT("newline expected")
 			}
 
-			char *start, *end;
-			if (!((start = strstr(dump, delim)) &&
-				(end = strstr(start += 4, delim)))) {
-				EXIT("delimeters not found")	
-			}
-			if ((board.col[i].row[j].value = strtoll(dump, NULL, 0)) == 0) {
-				EXIT("number >0 expected")
+			if (!((que = strstr(dump, delim)) &&
+				(ans = strstr(que + 4, delim)))) {
+				EXIT("delimeters not found")
 			}
 
-			board.col[i].row[j].question.len = end - start;
-			board.col[i].row[j].question.str =
-				malloc(board.col[i].row[j].question.len + 1);
-			memcpy(board.col[i].row[j].question.str, start,
+			board.col[i].row[j].value.str = malloc(
+				(board.col[i].row[j].value.len = que - dump) + 1);
+			board.col[i].row[j].question.str = malloc(
+				(board.col[i].row[j].question.len = ans - que - 4) + 1);
+			board.col[i].row[j].answer.str = malloc(
+				(board.col[i].row[j].answer.len = dump + dumplen - ans - 4) + 1);
+
+			memcpy(board.col[i].row[j].value.str, dump,
+				board.col[i].row[j].value.len + 1);
+			memcpy(board.col[i].row[j].question.str, que + 4,
 				board.col[i].row[j].question.len + 1);
-
-			board.col[i].row[j].answer.len = strlen(end + 4) - 1;
-			board.col[i].row[j].answer.str =
-				malloc(board.col[i].row[j].answer.len + 1);
-			strncpy(board.col[i].row[j].answer.str, end + 4,
-				board.col[i].row[j].answer.len);
+			memcpy(board.col[i].row[j].answer.str, ans + 4,
+				board.col[i].row[j].answer.len + 1);
 		}
 	}
 

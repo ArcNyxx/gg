@@ -11,8 +11,7 @@ typedef struct string {
 } String;
 
 typedef struct row {
-	String question, answer;
-	size_t value;
+	String value, question, answer;
 } Row;
 
 typedef struct column {
@@ -22,7 +21,7 @@ typedef struct column {
 } Column;
 
 typedef struct board {
-	String title;
+	char *title;
 	Column col[6];
 	size_t len;
 } Board;
