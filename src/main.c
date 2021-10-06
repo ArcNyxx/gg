@@ -8,12 +8,27 @@
 #include "file.h"
 #include "config.h"
 
+static sfText *text;
 static volatile sig_atomic_t term = 0;
 
+static void pos_text(sfVector2f pos, const char *text, size_t size_div);
 static void handle(int signal);
 
 static void
-handle(int signal) {
+pos_text(sfVector2f pos, const char *str, size_t size)
+{
+	sfText_setString(text, str);
+	sfText_setCharacterSize(text, size);
+	sfText_setPosition(text, pos);
+
+	sfFloatRect bounds = sfText_getLocalBounds(text);
+	sfVector2f origin = { bounds.width / 2.f, bounds.height / 2.f };
+	sfText_setOrigin(text, origin);
+}
+
+static void
+handle(int signal)
+{
 	(void)signal;
 	term = 1;
 }
@@ -30,11 +45,11 @@ main(int argc, char *argv[])
 	printf("gg: status: config file formatted correctly\n");
 
 	sfFont *font;
-	sfText *text = sfText_create();
 	if (!(font = sfFont_createFromFile(fontpath))) {
 		fprintf(stderr, "gg: unable to load font\n");
 		exit(1);
 	}
+	text = sfText_create();
 	sfText_setFont(text, font);
 
 	printf("gg: status: creating window\n");
@@ -64,37 +79,18 @@ main(int argc, char *argv[])
 		if (row == NULL) {
 			for (size_t i = 0; i < board.len; ++i) {
 				sfVector2f pos = { width / 6 * i + width / 12, height / 12 };
-				sfText_setCharacterSize(text, width / 40);
-				sfText_setString(text, board.col[i].title.str);
-				sfText_setPosition(text, pos);
-
-				sfFloatRect bounds = sfText_getLocalBounds(text);
-				sfVector2f origin = { bounds.width / 2.f, bounds.height / 2.f };
-				sfText_setOrigin(text, origin);
+				pos_text(pos, board.col[i].title.str, width / 40);
 				sfRenderWindow_drawText(window, text, NULL);
 				
 				for (size_t j = 0; j < board.col[i].len; ++j) {
 					pos.y += height / 6;
-					sfText_setCharacterSize(text, width / 25);
-					sfText_setString(text, board.col[i].row[j].value.str);
-					sfText_setPosition(text, pos);
-
-					bounds = sfText_getLocalBounds(text);
-					origin.x = bounds.width / 2.f;
-					origin.y = bounds.height / 2.f;
-					sfText_setOrigin(text, origin);
+					pos_text(pos, board.col[i].row[j].value.str, width / 25);
 					sfRenderWindow_drawText(window, text, NULL);
 				}
 			}
 		} else {
 			sfVector2f pos = { width / 2, height / 2 };
-			sfText_setCharacterSize(text, width / 15);
-			sfText_setString(text, move ? row->answer.str : row->question.str);
-			sfText_setPosition(text, pos);
-
-			sfFloatRect bounds = sfText_getLocalBounds(text);
-			sfVector2f origin = { bounds.width / 2.f, bounds.height / 2.f };
-			sfText_setOrigin(text, origin);
+			pos_text(pos, !move ? row->question.str : row->answer.str, width / 15);
 			sfRenderWindow_drawText(window, text, NULL);
 		}
 
