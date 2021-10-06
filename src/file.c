@@ -5,7 +5,7 @@
 #include "file.h"
 #include "config.h"
 
-#define ERROR(msg) fprintf(stderr, "gg: invalid syntax: " msg " (%d)\n", line)
+#define ERROR(msg) fprintf(stderr, "gg: invalid syntax: " msg " (%ld)\n", line)
 #define EXIT(msg) ERROR(msg); exit(1);
 
 Board
@@ -28,24 +28,26 @@ parse_conf(const char *fname)
 		EXIT("newline expected");
 	}
 
-	for (char i = 0; ; ++i, ++line) {
+	for (size_t i = 0; ; ++i, ++line) {
 		if ((board.col[i].title.len = getline(
-			&board.col[i].title.str, &dumplen, file)) == -1) {
+			&board.col[i].title.str, &dumplen, file)) == (size_t)-1) {
 			board.len = i;
 			break;
 		} else if (i >= 6) {
 			EXIT("end of file expected")
 		}
 		board.col[i].title.str = realloc(board.col[i].title.str,
-			board.col[i].title.len + 1);
+			board.col[i].title.len--);
+		board.col[i].title.str[board.col[i].title.len] = 0;
 
-		for (char j = 0; ; ++j, ++line) {
-			if ((dumplen = getline(&dump, &dumpalloc, file)) == -1) {
+		for (size_t j = 0; ; ++j, ++line) {
+			dumplen = getline(&dump, &dumpalloc, file);
+			if (dumplen == (size_t)-1) {
 				EXIT("row or newline expected")
 			} else if (dumplen == 1) {
 				board.col[i].len = j;
 				break;
-			} else if (j >= 6) {
+			} else if (j >= 5) {
 				EXIT("newline expected")
 			}
 
@@ -59,7 +61,8 @@ parse_conf(const char *fname)
 			board.col[i].row[j].question.str = malloc(
 				(board.col[i].row[j].question.len = ans - que - 4) + 1);
 			board.col[i].row[j].answer.str = malloc(
-				(board.col[i].row[j].answer.len = dump + dumplen - ans - 4) + 1);
+				(board.col[i].row[j].answer.len =
+				dump + dumplen - ans - 4) + 1);
 
 			memcpy(board.col[i].row[j].value.str, dump,
 				board.col[i].row[j].value.len + 1);

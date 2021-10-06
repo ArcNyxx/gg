@@ -15,7 +15,7 @@ main(int argc, char *argv[])
 		exit(1);
 	}
 
-	int width = 800, height = 600, x, y, col, row, que = 1;
+	size_t width = 800, height = 600, x, y, col, row, que = 1;
 	Board board = parse_conf(argv[1]);
 	printf("gg: status: config file formatted correctly\n");
 
@@ -28,8 +28,6 @@ main(int argc, char *argv[])
 	sfText *sm_text = sfText_create(), *lg_text = sfText_create();
 	sfText_setFont(sm_text, font);
 	sfText_setFont(lg_text, font);
-	sfText_setCharacterSize(sm_text, 24);
-	sfText_setCharacterSize(lg_text, 44);
 
 	printf("gg: status: creating window\n");
 	sfRenderWindow *window;
@@ -47,32 +45,46 @@ main(int argc, char *argv[])
 		while (sfRenderWindow_pollEvent(window, &event)) {
 			switch (event.type) {
 			case sfEvtClosed:
+				printf("gg: status: exiting\n");
 				sfRenderWindow_close(window);
-				break;
+				return 0;
 			case sfEvtResized:
-				width = event.size.width, height = event.size.width;
+				width = event.size.width;
+				height = event.size.height;
 				break;
 			case sfEvtMouseButtonPressed:
 				if (event.mouseButton.button == sfMouseLeft) {
-					x = event.mouseButton.x, y = event.mouseButton.y;
+					x = event.mouseButton.x;
+					y = event.mouseButton.y;
 				}
+			default: /* FALLTHROUGH */
 				break;
 			}
 		}
-		
+
 		sfRenderWindow_clear(window, sfBlack);
+		sfText_setCharacterSize(sm_text, width / 40);
+		sfText_setCharacterSize(lg_text, width / 20);
 
-		int rows = width / 6, cols = height / 6;
-		for (int i = 0; i < board.len; ++i) {
-			sfVector2f vec = { rows * i + 5, cols / 2 };
-			sfText_setPosition(sm_text, vec);
+		for (size_t i = 0; i < board.len; ++i) {
+			sfVector2f pos = { width / 6 * i + width / 12, height / 12 };
 			sfText_setString(sm_text, board.col[i].title.str);
-			sfRenderWindow_drawText(window, sm_text, NULL);
+			sfText_setPosition(sm_text, pos);
 
-			for (int j = 0; j < board.col[i].len; ++j) {
-				sfVector2f vecrow = { rows * i + 5, cols * i + cols / 2 };
-				sfText_setPosition(sm_text, vec);
-				sfText_setString(sm_text, board.col[i].row[i].value.str);
+			sfFloatRect bounds = sfText_getLocalBounds(sm_text);
+			sfVector2f origin = { bounds.width / 2.f, bounds.height / 2.f };
+			sfText_setOrigin(sm_text, origin);
+			sfRenderWindow_drawText(window, sm_text, NULL);
+			
+			for (size_t j = 0; j < board.col[i].len; ++j) {
+				pos.y += height / 6;
+				sfText_setString(sm_text, board.col[i].row[j].value.str);
+				sfText_setPosition(sm_text, pos);
+
+				bounds = sfText_getLocalBounds(sm_text);
+				origin.x = bounds.width / 2.f;
+				origin.y = bounds.height / 2.f;
+				sfText_setOrigin(sm_text, origin);
 				sfRenderWindow_drawText(window, sm_text, NULL);
 			}
 		}
