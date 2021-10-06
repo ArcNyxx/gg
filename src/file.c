@@ -69,7 +69,9 @@ parse_conf(const char *fname)
 			memcpy(board.col[i].row[j].question.str, que + 4,
 				board.col[i].row[j].question.len + 1);
 			memcpy(board.col[i].row[j].answer.str, ans + 4,
-				board.col[i].row[j].answer.len + 1);
+				board.col[i].row[j].answer.len--);
+			board.col[i].row[j].answer.str
+				[board.col[i].row[j].answer.len] = 0;
 		}
 	}
 
