@@ -57,6 +57,7 @@ main(int argc, char *argv[])
 
 	printf("gg: status: entering event loop\n");
 	Row *row = NULL;
+	size_t move = 0;
 	while (sfRenderWindow_isOpen(window) && !term) {
 		sfRenderWindow_clear(window, sfBlack);
 		
@@ -86,7 +87,15 @@ main(int argc, char *argv[])
 				}
 			}
 		} else {
-			
+			sfVector2f pos = { width / 2, height / 2 };
+			sfText_setCharacterSize(text, width / 15);
+			sfText_setString(text, move ? row->answer.str : row->question.str);
+			sfText_setPosition(text, pos);
+
+			sfFloatRect bounds = sfText_getLocalBounds(text);
+			sfVector2f origin = { bounds.width / 2.f, bounds.height / 2.f };
+			sfText_setOrigin(text, origin);
+			sfRenderWindow_drawText(window, text, NULL);
 		}
 
 		sfRenderWindow_display(window);
@@ -103,21 +112,25 @@ main(int argc, char *argv[])
 				break;
 			case sfEvtMouseButtonPressed:
 				if (event.mouseButton.button == sfMouseLeft) {
-					register size_t x, y;
-					if ((x = event.mouseButton.x / (width / 6)) < board.len) {
-						printf("%ld\n", board.col[x].len);
-						if ((y = event.mouseButton.y / (height / 6) - 1) < board.col[x].len) {
-							row = &board.col[x].row[y];
+					if (row == NULL) {
+						register size_t x, y;
+						if ((x = event.mouseButton.x / (width / 6)) < board.len) {
+							if ((y = event.mouseButton.y / (height / 6) - 1) < board.col[x].len) {
+								row = &board.col[x].row[y];
+							}
+						}
+					} else {
+						if (move) {
+							move = 0;
+							row = NULL;
+						} else {
+							move = 1;
 						}
 					}
 				}
 			default: /* FALLTHROUGH */
 				break;
 			}
-		}
-
-		if (row) {
-			printf("%s\n", row->question.str);
 		}
 	}
 
