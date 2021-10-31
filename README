@@ -1,0 +1,24 @@
+gridguess - classroom board game
+================================
+gridguess is a classroom board game designed to be both fun and minimal work
+to prepare games. It functions on a grid of unknown questions displayed in
+columns with each slot defined by a formatted text file.
+
+Requirements
+------------
+Edit config.mk to match your local setup
+
+Edit config.h to configure the path to a font.
+If you need to download a font, go to [https://fonts.google.com]
+
+Afterwards enter the following command to build and install gridguess (if
+necessary as root):
+
+    make clean install
+
+
+Running gridguess
+-----------------
+Run the binary at the command line with the properly formatted text file as
+the second argument. Either close the main window or interrupt the command
+line to quit.

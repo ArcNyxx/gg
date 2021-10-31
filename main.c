@@ -45,11 +45,11 @@ main(int argc, char *argv[])
 	printf("gg: status: config file formatted correctly\n");
 
 	sfFont *font;
+	text = sfText_create();
 	if (!(font = sfFont_createFromFile(fontpath))) {
 		fprintf(stderr, "gg: unable to load font\n");
 		exit(1);
 	}
-	text = sfText_create();
 	sfText_setFont(text, font);
 
 	printf("gg: status: creating window\n");
@@ -75,13 +75,13 @@ main(int argc, char *argv[])
 	size_t move = 0;
 	while (sfRenderWindow_isOpen(window) && !term) {
 		sfRenderWindow_clear(window, sfBlack);
-		
+
 		if (row == NULL) {
 			for (size_t i = 0; i < board.len; ++i) {
 				sfVector2f pos = { width / 6 * i + width / 12, height / 12 };
 				pos_text(pos, board.col[i].title.str, width / 40);
 				sfRenderWindow_drawText(window, text, NULL);
-				
+
 				for (size_t j = 0; j < board.col[i].len; ++j) {
 					pos.y += height / 6;
 					pos_text(pos, board.col[i].row[j].value.str, width / 25);
@@ -95,7 +95,7 @@ main(int argc, char *argv[])
 		}
 
 		sfRenderWindow_display(window);
-		
+
 		sfEvent event;
 		while (sfRenderWindow_pollEvent(window, &event)) {
 			switch (event.type) {
@@ -116,12 +116,9 @@ main(int argc, char *argv[])
 							}
 						}
 					} else {
-						if (move) {
-							move = 0;
-							row = NULL;
-						} else {
-							move = 1;
-						}
+						/* swaps move and nullifies row on move */
+						move = ~move;
+						row = (Row *)((size_t)row & move);
 					}
 				}
 			default: /* FALLTHROUGH */
