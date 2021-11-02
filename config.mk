@@ -8,12 +8,15 @@ VERSION = 0.0.0-indev
 # paths
 PREFIX = /usr/local
 
+# includes and libs
+LIBS = -lcsfml-graphics -lcsfml-system -lcsfml-window
+
 # flags
 WPROFILE = -Wall -Wextra -Wmissing-prototypes -Wstrict-prototypes \
 -Wmissing-declarations -Wswitch-default -Wunreachable-code -Wcast-align \
 -Wpointer-arith -Wbad-function-cast -Winline -Wundef -Wnested-externs \
 -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal
 GGCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 $(WPROFILE) \
-	-O2
+	-std=c99 -pedantic -O2 -g
 GGCFLAGS = $(GGCPPFLAGS) $(CPPFLAGS) $(CFLAGS)
-GGLDFLAGS = $(LDFLAGS)
+GGLDFLAGS = $(LIBS) $(LDFLAGS)

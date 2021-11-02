@@ -1,82 +1,55 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "file.h"
-#include "config.h"
+#include "util.h"
 
-#define ERROR(msg) fprintf(stderr, "gg: invalid syntax: " msg " (%ld)\n", line)
-#define EXIT(msg) ERROR(msg); exit(1);
-
-Board
-parse_conf(const char *fname)
+void
+mkboard(Board *board, FILE *file)
 {
-	char *dump = NULL, *que, *ans;
-	size_t line = 2, dumplen = 0, dumpalloc = 0;
-	Board board = { 0 };
+	char *content = NULL, *ques, *ans = NULL; /* define to avoid warning */
+	register size_t lines = 2, len;
+	size_t dump, i, j;
 
-	FILE *file;
-	if (!(file = fopen(fname, "r"))) {
-		fprintf(stderr, "gg: file not found\n");
-		exit(1);
-	}
+	(void)getline(&board->title, &dump, file);
+	if (getline(&content, &dump, file) != 1)
+		die("gg: invalid syntax: newline expected (2)\n");
 
-	dumplen = getline(&board.title, &dumpalloc, file) - 1;
-	board.title = realloc(board.title, dumplen + sizeof(title));
-	memcpy(board.title + dumplen, title, sizeof(title));
-	if (getline(&dump, &dumpalloc, file) != 1) {
-		EXIT("newline expected");
-	}
-
-	for (size_t i = 0; ; ++i, ++line) {
-		if ((board.col[i].title.len = getline(
-			&board.col[i].title.str, &dumplen, file)) == (size_t)-1) {
-			board.len = i;
+	for (i = 0; ; ++i, ++lines) {
+		if ((len = getline(&board->col[i].title, &dump, file)) == (size_t)-1) {
+			free(content);
+			board->len = i;
 			break;
 		} else if (i >= 6) {
-			EXIT("end of file expected")
+			die("gg: invalid syntax: end of file expected (%ld)\n", lines);
 		}
-		board.col[i].title.str = realloc(board.col[i].title.str,
-			board.col[i].title.len--);
-		board.col[i].title.str[board.col[i].title.len] = 0;
+		board->col[i].title[len] = '\0'; /* just overwrites '\n', leaves extra */;
 
-		for (size_t j = 0; ; ++j, ++line) {
-			dumplen = getline(&dump, &dumpalloc, file);
-			if (dumplen == (size_t)-1) {
-				EXIT("row or newline expected")
-			} else if (dumplen == 1) {
-				board.col[i].len = j;
+		for (j = 0; ; ++j, ++lines) {
+			if ((len = getline(&content, &dump, file)) == (size_t)-1) {
+				die("gg: invalid syntax: row or newline expected (%ld)\n", lines);
+			} else if (len == (size_t)1) {
+				board->col[i].len = j;
 				break;
 			} else if (j >= 5) {
-				EXIT("newline expected")
+				die("gg: invalid syntax: newline expected (%ld)\n", lines);
 			}
 
-			if (!((que = strstr(dump, delim)) &&
-				(ans = strstr(que + 4, delim)))) {
-				EXIT("delimeters not found")
-			}
+			if ((ques = strstr(content, " %% ")) == NULL ||
+				(ans = strstr(ques + 4, " %% ")) == NULL)
+				die("gg: invalid syntax: delimeters not found (%ld)\n", lines);
 
-			board.col[i].row[j].value.str = malloc(
-				(board.col[i].row[j].value.len = que - dump) + 1);
-			board.col[i].row[j].question.str = malloc(
-				(board.col[i].row[j].question.len = ans - que - 4) + 1);
-			board.col[i].row[j].answer.str = malloc(
-				(board.col[i].row[j].answer.len =
-				dump + dumplen - ans - 4) + 1);
-
-			memcpy(board.col[i].row[j].value.str, dump,
-				board.col[i].row[j].value.len + 1);
-			memcpy(board.col[i].row[j].question.str, que + 4,
-				board.col[i].row[j].question.len + 1);
-			memcpy(board.col[i].row[j].answer.str, ans + 4,
-				board.col[i].row[j].answer.len--);
-			board.col[i].row[j].answer.str
-				[board.col[i].row[j].answer.len] = 0;
+			/* 
+			 * no reallocating for speed, just terminate strings
+			 * they remain for application lifetime, no hanging pointers
+			 */
+			board->col[i].row[j].value = content;
+			board->col[i].row[j].question = ques + 4;
+			board->col[i].row[j].answer = ans + 4;
+			*ques = '\0', *ans = '\0', *(content + len - 1) = '\0';
+			content = NULL;
 		}
 	}
-
-	free(dump);
-	fclose(file);
-	return board;
 }
-

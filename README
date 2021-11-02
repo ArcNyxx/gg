@@ -8,8 +8,8 @@ Requirements
 ------------
 Edit config.mk to match your local setup
 
-Edit config.h to configure the path to a font.
-If you need to download a font, go to [https://fonts.google.com]
+Edit gg.h to configure the path to a font.
+If you need to download a font, go to [https://fonts.google.com].
 
 Afterwards enter the following command to build and install gridguess (if
 necessary as root):

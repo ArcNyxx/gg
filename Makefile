@@ -10,7 +10,7 @@ SRC = $(wildcard *.c)
 HEAD = $(wildcard *.h)
 OBJ = $(SRC:.c=.o)
 
-all: options gridguess
+all: options gg
 
 options:
 	@echo gridguess build options:
@@ -23,25 +23,25 @@ options:
 
 $(OBJ): $(HEAD) config.mk
 
-gridguess: $(OBJ)
+gg: $(OBJ)
 	$(CC) -o $@ $(OBJ) $(GGLDFLAGS)
 
 clean:
-	rm -f gridguess $(OBJ) gridguess-$(VERSION).tar.gz
+	rm -f gg $(OBJ) gg-$(VERSION).tar.gz
 
 dist: clean
-	mkdir -p gridguess-$(VERSION)
+	mkdir -p gg-$(VERSION)
 	cp -R LICENCE Makefile README config.mk \
-		$(SRC) $(HEAD) gridguess-$(VERSION)
-	tar -cf - gridguess-$(VERSION) | gzip > gridguess-$(VERSION).tar.gz
-	rm -rf gridguess-$(VERSION)
+		$(SRC) $(HEAD) gg-$(VERSION)
+	tar -cf - gg-$(VERSION) | gzip > gg-$(VERSION).tar.gz
+	rm -rf gg-$(VERSION)
 
-install: gridguess
+install: gg
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f gridguess $(DESTDIR)$(PREFIX)/bin
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/gridguess
+	cp -f gg $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/gg
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/gridguess
+	rm -f $(DESTDIR)$(PREFIX)/bin/gg
 
 .PHONY: all options clean dist install uninstall
