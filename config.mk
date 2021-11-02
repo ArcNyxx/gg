@@ -17,6 +17,6 @@ WPROFILE = -Wall -Wextra -Wmissing-prototypes -Wstrict-prototypes \
 -Wpointer-arith -Wbad-function-cast -Winline -Wundef -Wnested-externs \
 -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal
 GGCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 $(WPROFILE) \
-	-std=c99 -pedantic -O2 -g
+	-std=c99 -pedantic -g
 GGCFLAGS = $(GGCPPFLAGS) $(CPPFLAGS) $(CFLAGS)
 GGLDFLAGS = $(LIBS) $(LDFLAGS)

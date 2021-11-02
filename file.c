@@ -30,7 +30,7 @@ mkboard(Board *board, FILE *file)
 		for (j = 0; ; ++j, ++lines) {
 			if ((len = getline(&content, &dump, file)) == (size_t)-1) {
 				die("gg: invalid syntax: row or newline expected (%ld)\n", lines);
-			} else if (len == (size_t)1) {
+			} else if (len == 1) {
 				board->col[i].len = j;
 				break;
 			} else if (j >= 5) {

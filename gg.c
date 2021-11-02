@@ -67,7 +67,7 @@ main(int argc, const char *argv[])
 			sfText_setOrigin(text, origin);
 			sfRenderWindow_drawText(window, text, NULL);
 		} else {
-			pos = (sfVector2f){ width / 6 + width / 12, height / 12 };
+			pos = (sfVector2f){ width / 12, height / 12 };
 			for (size_t i = 0; i < board.len; ++i) {
 				sfText_setCharacterSize(text, width / 25);
 				sfText_setPosition(text, pos);
@@ -110,7 +110,7 @@ main(int argc, const char *argv[])
 					register size_t x = event.mouseButton.x / (width / 6);
 					register size_t y = event.mouseButton.y / (height / 6);
 					if (x < board.len && y - 1 < board.col[x].len)
-						row = &board.col[x].row[y];
+						row = &board.col[x].row[y - 1];
 				} else {
 					ques = ~ques;
 					row = (Row *)((size_t)row & ques);
