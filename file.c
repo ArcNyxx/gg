@@ -1,3 +1,9 @@
+/*
+ * statb - simple info bar
+ * Copyright (C) 2021 FearlessDoggo21
+ * see LICENCE file for licensing information
+ */
+
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>

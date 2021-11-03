@@ -1,3 +1,9 @@
+/*
+ * statb - simple info bar
+ * Copyright (C) 2021 FearlessDoggo21
+ * see LICENCE file for licensing information
+ */
+
 #ifndef FILE_H
 #define FILE_H
 
