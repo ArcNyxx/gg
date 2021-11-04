@@ -7,12 +7,8 @@
 #ifndef FILE_H
 #define FILE_H
 
-#ifndef _STDDEF_H
 #include <stddef.h>
-#endif /* _STDDEF_H */
-#ifndef _STDIO_H
 #include <stdio.h>
-#endif /* _STDIO_H */
 
 typedef struct string {
 	char *str;
