@@ -4,15 +4,9 @@
  * see LICENCE file for licensing information
  */
 
-#ifndef FILE_H
-#define FILE_H
-
-#include <stddef.h>
-#include <stdio.h>
-
 typedef struct string {
 	char *str;
-	size_t len;
+	int len;
 } String;
 
 typedef struct row {
@@ -22,16 +16,13 @@ typedef struct row {
 typedef struct column {
 	char *title;
 	Row row[5];
-	size_t len;
+	int len;
 } Column;
 
 typedef struct board {
 	char *title;
 	Column col[6];
-	size_t len;
+	int len;
 } Board;
 
 void mkboard(Board *board, FILE *file);
-
-#endif /* FILE_H */
-

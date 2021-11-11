@@ -4,7 +4,6 @@
  * see LICENCE file for licensing information
  */
 
-#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,16 +14,15 @@
 void
 mkboard(Board *board, FILE *file)
 {
-	char *content = NULL, *ques, *ans = NULL; /* define to avoid warning */
-	register size_t lines = 2, len;
-	size_t dump, i, j;
+	char *content = NULL, *que = NULL, *ans = NULL;
+	unsigned long dump, lines = 2, len;
 
 	(void)getline(&board->title, &dump, file);
 	if (getline(&content, &dump, file) != 1)
 		die("gg: invalid syntax: newline expected (2)\n");
 
-	for (i = 0; ; ++i, ++lines) {
-		if ((len = getline(&board->col[i].title, &dump, file)) == (size_t)-1) {
+	for (int i = 0; ; ++i, ++lines) {
+		if ((len = getline(&board->col[i].title, &dump, file)) == -1) {
 			free(content);
 			board->len = i;
 			break;
@@ -33,7 +31,7 @@ mkboard(Board *board, FILE *file)
 		}
 		board->col[i].title[len] = '\0'; /* just overwrites '\n', leaves extra */;
 
-		for (j = 0; ; ++j, ++lines) {
+		for (int j = 0; ; ++j, ++lines) {
 			if ((len = getline(&content, &dump, file)) == (size_t)-1) {
 				die("gg: invalid syntax: row or newline expected (%ld)\n", lines);
 			} else if (len == 1) {
@@ -43,8 +41,8 @@ mkboard(Board *board, FILE *file)
 				die("gg: invalid syntax: newline expected (%ld)\n", lines);
 			}
 
-			if ((ques = strstr(content, " %% ")) == NULL ||
-				(ans = strstr(ques + 4, " %% ")) == NULL)
+			if ((que = strstr(content, " %% ")) == NULL ||
+				(ans = strstr(que + 4, " %% ")) == NULL)
 				die("gg: invalid syntax: delimeters not found (%ld)\n", lines);
 
 			/* 
@@ -52,9 +50,9 @@ mkboard(Board *board, FILE *file)
 			 * they remain for application lifetime, no hanging pointers
 			 */
 			board->col[i].row[j].value = content;
-			board->col[i].row[j].question = ques + 4;
+			board->col[i].row[j].question = que + 4;
 			board->col[i].row[j].answer = ans + 4;
-			*ques = '\0', *ans = '\0', *(content + len - 1) = '\0';
+			*que = '\0', *ans = '\0', *(content + len - 1) = '\0';
 			content = NULL;
 		}
 	}
