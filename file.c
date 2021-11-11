@@ -22,7 +22,7 @@ mkboard(Board *board, FILE *file)
 		die("gg: invalid syntax: newline expected (2)\n");
 
 	for (int i = 0; ; ++i, ++lines) {
-		if ((len = getline(&board->col[i].title, &dump, file)) == -1) {
+		if ((len = getline(&board->col[i].title, &dump, file)) == (size_t)-1) {
 			free(content);
 			board->len = i;
 			break;

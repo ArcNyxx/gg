@@ -1,0 +1,40 @@
+.TH GRIDGUESS 1 gridguess\-VERSION
+.SH NAME
+gridguess \- classroom board game
+.SH SYNOPSIS
+\fBgg\fR [\fIfile\fR]
+.SH DESCRIPTION
+\fBgridguess\fR is a classroom board game designed to be both easy to prepare for the educator.  For this reason, each board is made with a plaintext file formatted for the parser.  The formatting is designed to be easy for a beginner to unserstand and lightweight enough for an advanced user to type quickly.
+.SH OPTIONS
+.TP
+[\fIfile\fR]
+The plaintext file containing the board.
+.SH FORMAT
+The plaintext board file has a very strict format and must be typed accurately.  \fBgridguess\fR will return an error message with the line number when it encounters an improperly formatted file.  Each error message is detailed below.
+.TP
+Title
+The board file shall begin with a title followed by two newlines.  This title will alone function as the window title.
+.TP
+Columns
+There are a maximum of six columns on any board, but any number fewer is acceptable.  Each column shall begin with the column title followed by one newline.  After this, the entries shall be described, each followed by a newline.  There are a maximum of five entries in a column, but any number fewer is acceptable.  After a column is complete, an extra newline shall be written.
+.TP
+Entries
+An entry into a column slot consists of a value, a question, and an answer.  They shall be typed in the aforementioned order and each separated by \fB" %% "\fR (not including the double quotes).
+.SH DIAGNOSTICS
+.TP
+Newline Expected
+This message is given if a newline was expected rather than another entry or the end of the file.
+.TP
+Newline or Row Expected
+This message is given if the file terminates abruptly without ending its final row with a newline.
+.TP
+End of File Expected
+This message is given if there are more than six columns.  \fBgridguess\fR will not attempt to parse more, it will simply terminate.
+.TP
+Delimeters Not Found
+This message is given if an entry's value and question or question and answer are not properly separated by \fB"\ %%\ "\fR.
+.SH EXAMPLES
+See \fIexample.txt\fR or find it at \fIhttps://github.com/fearlessdoggo21/gg/blob/master/example.txt\fR.
+.SH BUGS
+Send all bug reports to \fIhttps://github.com/fearlessdoggo21/gg/issues\fR, and all patches to \fIhttps://github.com/fearlessdoggo21/gg/pulls\fN.
+
