@@ -1,8 +1,8 @@
 gridguess - classroom board game
 ================================
-gridguess is a classroom board game designed to be both fun and minimal work
-to prepare games. It functions on a grid of unknown questions displayed in
-columns with each slot defined by a formatted text file.
+gridguess is a classroom board game designed to be both easy to prepare and
+fun. It functions on a grid of unknown questions displayed in columns with
+point values. Each slot is defined by a formatted plaintext file.
 
 Requirements
 ------------
@@ -16,9 +16,3 @@ necessary as root):
 
     make clean install
 
-
-Running gridguess
------------------
-Run the binary at the command line with the properly formatted text file as
-the second argument. Either close the main window or interrupt the command
-line to quit.
