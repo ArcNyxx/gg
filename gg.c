@@ -40,7 +40,7 @@ main(int argc, const char **argv)
 
 	sfFont *font;
 	sfText *text = sfText_create();
-	if ((font = sfFont_createFromFile("roboto.ttf")) == NULL)
+	if ((font = sfFont_createFromFile("font.ttf")) == NULL)
 		die("gg: unable to load font\n");
 	sfText_setFont(text, font);
 
@@ -74,7 +74,7 @@ main(int argc, const char **argv)
 				if (row == NULL) {
 					int x = event.mouseButton.x / (width / 6),
 						y = event.mouseButton.y / (height / 6) - 1;
-					if (x < board.len && y < board.col[x].len)
+					if (x < board.len && y != -1 && y  < board.col[x].len)
 						row = &board.col[x].row[y];
 				} else {
 					que = ~que;
@@ -88,7 +88,7 @@ main(int argc, const char **argv)
 		if (row == NULL) {
 			sfVector2f pos = { width / 12, height / 12 };
 			for (int i = 0; i < board.len; ++i) {
-				sfText_setCharacterSize(text, width / 25);
+				sfText_setCharacterSize(text, width / 40);
 				sfText_setPosition(text, pos);
 				sfText_setString(text, board.col[i].title);
 
