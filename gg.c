@@ -117,7 +117,7 @@ main(int argc, const char **argv)
 		} else {
 			sfText_setCharacterSize(text, width / 15);
 			sfText_setPosition(text, (sfVector2f){ width / 2, height / 2 });
-			sfText_setString(text, que ? row->question : row->answer);
+			sfText_setString(text, que ? row->answer : row->question);
 
 			bounds = sfText_getLocalBounds(text);
 			sfText_setOrigin(text,
