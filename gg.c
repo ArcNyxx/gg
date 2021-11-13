@@ -71,6 +71,10 @@ main(int argc, const char **argv)
 					sfView_createFromRect((sfFloatRect){ 0, 0, width, height }));
 				break;
 			case sfEvtMouseButtonPressed:
+				/* 
+				 * if row is null, set row, que is ~0
+				 * else, bitwise not que and bitwise and with ptr to zero
+				 */
 				if (row == NULL) {
 					int x = event.mouseButton.x / (width / 6),
 						y = event.mouseButton.y / (height / 6) - 1;
@@ -105,13 +109,13 @@ main(int argc, const char **argv)
 
 					bounds = sfText_getLocalBounds(text);
 					sfText_setOrigin(text,
-						(sfVector2f){ bounds.width / 2, bounds.height / 2 });
+						(sfVector2f){ bounds.width / 2, bounds.height });
 					sfRenderWindow_drawText(window, text, NULL);
 				}
 				pos.x += width / 6, pos.y = height / 12;
 			}
 		} else {
-			sfText_setCharacterSize(text, width / 25);
+			sfText_setCharacterSize(text, width / 15);
 			sfText_setPosition(text, (sfVector2f){ width / 2, height / 2 });
 			sfText_setString(text, que ? row->question : row->answer);
 

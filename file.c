@@ -15,9 +15,11 @@ void
 mkboard(Board *board, FILE *file)
 {
 	char *content = NULL, *que = NULL, *ans = NULL;
-	unsigned long dump, lines = 2, len;
+	unsigned long dump = 0, lines = 2, len;
 
-	(void)getline(&board->title, &dump, file);
+	if ((dump = getline(&board->title, &dump, file)) == (size_t)-1)
+		die("gg: invalid syntax: title expected (1)\n");
+	board->title[dump - 1] = '\0';
 	if (getline(&content, &dump, file) != 1)
 		die("gg: invalid syntax: newline expected (2)\n");
 
@@ -30,6 +32,7 @@ mkboard(Board *board, FILE *file)
 			die("gg: invalid syntax: end of file expected (%ld)\n", lines);
 		}
 		board->col[i].title[len] = '\0'; /* just overwrites '\n', leaves extra */;
+		addnl(board->col[i].title, 11);
 
 		for (int j = 0; ; ++j, ++lines) {
 			if ((len = getline(&content, &dump, file)) == (size_t)-1) {
@@ -54,6 +57,9 @@ mkboard(Board *board, FILE *file)
 			board->col[i].row[j].answer = ans + 4;
 			*que = '\0', *ans = '\0', *(content + len - 1) = '\0';
 			content = NULL;
+
+			addnl(board->col[i].row[j].question, 23);
+			addnl(board->col[i].row[j].answer, 23);
 		}
 	}
 }

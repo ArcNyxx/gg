@@ -8,7 +8,7 @@ Requirements
 ------------
 Edit config.mk to match your local setup
 
-Edit gg.h to configure the path to a font or name a font [font.ttf] in the
+Edit gg.c to configure the path to a font or name a font [font.ttf] in the
 source directory. If you need to download a font, go to
 [https://fonts.google.com].
 

@@ -5,3 +5,4 @@
  */
 
 void die(const char *fmt, ...);
+void addnl(char *string, int cutoff);
