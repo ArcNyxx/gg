@@ -1,8 +1,6 @@
-/*
- * gridguess - classroom board game
+/* gridguess - classroom board game
  * Copyright (C) 2021 FearlessDoggo21
- * see LICENCE file for licensing information
- */
+ * see LICENCE file for licensing information */
 
 typedef struct string {
 	char *str;

@@ -1,5 +1,5 @@
 # gridguess - classroom board game
-# Copyright (C) 2021 FearlessDoggo21
+# Copyright (C) 2021-2022 FearlessDoggo21
 # see LICENCE file for licensing information
 
 .POSIX:
@@ -31,11 +31,17 @@ dist: clean
 	rm -rf gg-$(VERSION)
 
 install: all
-	mkdir -p $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(MANPREFIX)/man1
+	mkdir -p $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(MANPREFIX)/man1 \
+		$(DESTDIR)$(MANPREFIX)/man5
 	cp -f gg $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/gg
-	sed "s/VERSION/$(VERSION)/g" < gg.1 > $(DESTDIR)$(MANPREFIX)/man1/gg.1
-	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/gg.1
+	sed "s/VERSION/$(VERSION)/g" < gg.1 > $(DESTDIR)$(MANPREFIX)/man1/gg.1 \
+		> $(DESTDIR)$(MANPREFIX)/man1/gridguess.1
+	sed "s/VERSION/$(VERSION)/g" < gg.5 > $(DESTDIR)$(MANPREFIX)/man5/gg.5 \
+		> $(DESTDIR)$(MANPREFIX)/man5/gridguess.5
+	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/gg.1 $(DESTDIR)$(MANPREFIX)/man5/gg.5 \
+		$(DESTDIR)$(MANPREFIX)/man1/gridguess.1 \
+		$(DESTDIR)$(MANPREFIX)/man5/gridguess.5
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/gg $(DESTDIR)$(MANPREFIX)/man1/gg.1

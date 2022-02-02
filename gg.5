@@ -1,0 +1,51 @@
+.TH gridguess 5 gridguess\-VERSION
+.SH NAME
+gridguess \- classroom board game
+.SH SYNOPSIS
+.SY gg
+.IR file " ..."
+.YS
+.SH DESCRIPTION
+.BR gridguess (1)
+is a classroom board game which utilises a formatted text file to describe
+game boards.
+.TP
+Title
+The board file shall begin with a title followed by two newlines.  This title
+will function as the window title.
+.TP
+Columns
+There are six columns on each game board, but not all need to be filled with
+questions.  Each column shall begin with the column title followed by one
+newline.  After this, slot entries shall be described, each followed by a
+newline.  There are five slots in each column, but not all need to be filled
+with a question.  Each column shall end with an additional newline to separate
+it from the next.
+.TP
+Slots
+An entry into a column slot consists of a value, a question, and an answer.
+They shall be typed in the aforementioned order and separated by "
+.B  %%
+" (not including the quotation marks).
+.SH EXAMPLE
+To create a board:
+.PP
+.EX
+GridGuess - 1.1.0
+
+Jokes
+100 %% Why did the chicken cross the road? %% To get to the other side.
+200 %% Why don't oysters donate to charity? %% Because they're shellfish.
+300 %% What do you call a fly without wings? %% A walk.
+
+Science
+100 %% Which planet is the hottest in our solar system? %% Venus.
+200 %% How many atoms of oxygen are in a molecule of ozone? %% Three.
+300 %% Which natural disaster is measured on the Richter Scale? %% Earthquakes.
+400 %% Who discovered penicillin? %% Alexander Fleming.
+
+.EE
+.SH AUTHOR
+Written by FearlessDoggo21.
+.SH SEE ALSO
+.BR gridguess (1)

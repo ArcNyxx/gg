@@ -2,42 +2,44 @@
 .SH NAME
 gridguess \- classroom board game
 .SH SYNOPSIS
-\fBgg\fR [\fIfile\fR]
+.SY gg
+.I file
+.YS
 .SH DESCRIPTION
-\fBgridguess\fR is a classroom board game designed to be easy to prepare for the educator.  For this reason, each board is made with a plaintext file formatted for the parser.  The formatting, however easy, is still lightweight enough for an advanced user to quickly type.
-.SH OPTIONS
-.TP
-[\fIfile\fR]
-The plaintext file containing the board.
-.SH FORMAT
-The plaintext board file has a very strict format and must be typed accurately.  \fBgridguess\fR will return an error message with the line number when it encounters an improperly formatted file.  Each error message is detailed below.
-.TP
-Title
-The board file shall begin with a title followed by two newlines.  This title will alone function as the window title.
-.TP
-Columns
-There are a maximum of six columns on any board, but any number fewer is acceptable.  Each column shall begin with the column title followed by one newline.  After this, the entries shall be described, each followed by a newline.  There are a maximum of five entries in a column, but any number fewer is acceptable.  After a column is complete, an extra newline shall be written.
-.TP
-Entries
-An entry into a column slot consists of a value, a question, and an answer.  They shall be typed in the aforementioned order and each separated by \fB"\ %%\ "\fR (not including the double quotes).
-.SH DIAGNOSTICS
+.BR gridguess (1)
+is a classroom board game designed to be both fun and easy to prepare for
+educators with any level of technical skill.  It functions on a grid of unknown
+questions with corresponding answers hidden behind question point values.  Each
+board is defined by a formatted text file.
+.PP
+The board file must be typed accurately as it has a very strict format.  
+.BR gridguess (1)
+will return a diagnostic error message with the line number when it encounters
+a formatting error.  The format details can be found in
+.BR gridguess "(5). "
 .TP
 Newline Expected
-This message is given if a newline was expected rather than another entry or the end of the file.
+Given if a newline was expected rather than another slot entry, or at the end
+of the file if the last column was not ended with an extra newline.
 .TP
 Newline or Row Expected
-This message is given if the file terminates abruptly without ending its final row with a newline.
+Given if the file terminates abruptly without ending its final column entry
+with a newline.
 .TP
 Title Expected
-This message is given if the file is empty.
+Given if the input file is empty.
 .TP
 End of File Expected
-This message is given if there are more than six columns.  \fBgridguess\fR will not attempt to parse more, it will simply terminate.
+Given if there are more than six columns.
+.BR gridguess (1)
+will not attempt to parse more than it can fit on a board, it will simply
+terminate execution.
 .TP
-Delimeters Not Found
-This message is given if an entry's value and question or question and answer are not properly separated by \fB"\ %%\ "\fR.
-.SH EXAMPLES
-See \fIexample.txt\fR or find it at \fIhttps://github.com/fearlessdoggo21/gg/blob/master/example.txt\fR.
-.SH BUGS
-Send all bug reports to \fIhttps://github.com/fearlessdoggo21/gg/issues\fR, and all patches to \fIhttps://github.com/fearlessdoggo21/gg/pulls\fN.
-
+Delimeters not Found
+Given if a column entry is not properly delimited with "
+.B  %% 
+".
+.SH AUTHOR
+Written by FearlessDoggo21.
+.SH SEE ALSO
+.BR gridguess (5)

@@ -1,19 +1,26 @@
 gridguess - classroom board game
 ================================
-gridguess is a classroom board game designed to be both easy to prepare and
-fun. It functions on a grid of unknown questions displayed in columns with
-point values. Each slot is defined by a formatted plaintext file.
+gridguess is a classroom board game designed to be both fun and easy to prepare
+for educators with any level of technical skill. It functions on a grid of
+unknown questions displayed in columns with point values. Each slot is defined
+by a formatted plaintext file.
 
 Requirements
 ------------
-Edit config.mk to match your local setup
+In order to build gg, you need the SFML header files and the CSFML bindings.
 
-Edit gg.c to configure the path to a font or name a font [font.ttf] in the
-source directory. If you need to download a font, go to
-[https://fonts.google.com].
+Installation
+------------
+Edit config.mk to match your local setup.
+Edit gg.c to configure the path to a font.
 
-Afterwards enter the following command to build and install gridguess (if
-necessary as root):
+Afterwards, enter the following command to build and install gridguess (if
+necessary, as root):
 
     make clean install
 
+
+Configuration
+-------------
+The configuration of ccash_cmd is done by creating a custom config.h and
+(re)compiling the source code. This keeps it fast, secure, and simple.

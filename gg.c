@@ -1,8 +1,6 @@
-/*
- * gridguess - classroom board game
+/* gridguess - classroom board game
  * Copyright (C) 2021 FearlessDoggo21
- * see LICENCE file for licensing information
- */
+ * see LICENCE file for licensing information */
 
 #include <signal.h>
 #include <stdio.h>
@@ -32,7 +30,7 @@ main(int argc, const char **argv)
 	Board board = { 0 };
 
 	if (argc != 2)
-		die("gg: board file must be supplied\n");
+		die("usage: gg [file]\n");
 	if ((file = fopen(argv[1], "r")) == NULL)
 		die("gg: file not found\n");
 	mkboard(&board, file);
@@ -55,7 +53,8 @@ main(int argc, const char **argv)
 		die("gg: unable to set signal handler\n");
 
 	Row *row = NULL;
-	long width = 800, height = 450, que = 0;
+	long width = 800, height = 450;
+	char ans = 0;
 	while (sfRenderWindow_isOpen(window) && running) {
 		sfEvent event;
 		while (sfRenderWindow_pollEvent(window, &event)) {
@@ -71,24 +70,22 @@ main(int argc, const char **argv)
 					sfView_createFromRect((sfFloatRect){ 0, 0, width, height }));
 				break;
 			case sfEvtMouseButtonPressed:
-				/* 
-				 * if row is null, set row, que is ~0
-				 * else, bitwise not que and bitwise and with ptr to zero
-				 */
+				/* if row is null, set row, ans is ~0
+				 * else, bitwise not ans and bitwise and with ptr to zero */
 				if (row == NULL) {
 					int x = event.mouseButton.x / (width / 6),
 						y = event.mouseButton.y / (height / 6) - 1;
 					if (x < board.len && y != -1 && y  < board.col[x].len)
 						row = &board.col[x].row[y];
 				} else {
-					que = ~que;
-					row = (Row *)((unsigned long)row & que);
+					ans = !ans;
+					if (!ans)
+						row = NULL;
 				}
 			}
 		}
-		sfRenderWindow_clear(window, sfBlack);
 
-		sfFloatRect bounds;
+		sfRenderWindow_clear(window, sfBlack);
 		if (row == NULL) {
 			sfVector2f pos = { width / 12, height / 12 };
 			for (int i = 0; i < board.len; ++i) {
@@ -96,7 +93,7 @@ main(int argc, const char **argv)
 				sfText_setPosition(text, pos);
 				sfText_setString(text, board.col[i].title);
 
-				bounds = sfText_getLocalBounds(text);
+				sfFloatRect bounds = sfText_getLocalBounds(text);
 				sfText_setOrigin(text,
 					(sfVector2f){ bounds.width / 2, bounds.height / 2 });
 				sfRenderWindow_drawText(window, text, NULL);
@@ -117,9 +114,9 @@ main(int argc, const char **argv)
 		} else {
 			sfText_setCharacterSize(text, width / 15);
 			sfText_setPosition(text, (sfVector2f){ width / 2, height / 2 });
-			sfText_setString(text, que ? row->answer : row->question);
+			sfText_setString(text, ans ? row->answer : row->question);
 
-			bounds = sfText_getLocalBounds(text);
+			sfFloatRect bounds = sfText_getLocalBounds(text);
 			sfText_setOrigin(text,
 				(sfVector2f){ bounds.width / 2, bounds.height / 2 });
 			sfRenderWindow_drawText(window, text, NULL);
